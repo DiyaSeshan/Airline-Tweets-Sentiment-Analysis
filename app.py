@@ -18,22 +18,18 @@ def home():
     if request.method == "POST":
         text = request.form["text"]
 
-        # Hardcoded rule for specific input
-        if text.strip().lower() == "great job on the 5 hour delay. best experience ever!" or text.strip().lower() == "Loved spending my entire vacation at the airport. Best trip ever!":
-            sentiment_label = "Sarcasm"
-        else:
-            # Tokenize input
-            inputs = tokenizer(text, return_tensors="pt", truncation=True, padding=True)
+        # Tokenize input
+        inputs = tokenizer(text, return_tensors="pt", truncation=True, padding=True)
 
-            # Get model predictions
-            with torch.no_grad():
-                outputs = model(**inputs)
+        # Get model predictions
+        with torch.no_grad():
+            outputs = model(**inputs)
 
-            # Get predicted class
-            predicted_class = torch.argmax(outputs.logits, dim=1).item()
+        # Get predicted class
+        predicted_class = torch.argmax(outputs.logits, dim=1).item()
 
-            sentiment_mapping = {0: "Negative", 1: "Neutral", 2: "Positive"}
-            sentiment_label = sentiment_mapping.get(predicted_class, "Unknown")
+        sentiment_mapping = {0: "Negative", 1: "Neutral", 2: "Positive"}
+        sentiment_label = sentiment_mapping.get(predicted_class, "Unknown")
 
         return render_template("index.html", prediction=sentiment_label)
 
